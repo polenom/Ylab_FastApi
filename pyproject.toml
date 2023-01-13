@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "ylab-cours-fastapi"
+version = "0.1.0"
+description = ""
+authors = ["polenom <vitalimitsevich@yandex.by>"]
+readme = "README.md"
+packages = []
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = {extras = ["all"], version = "^0.89.1"}
+sqlalchemy = "^1.4.46"
+alembic = "^1.9.1"
+psycopg2 = "^2.9.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
