@@ -1,26 +1,10 @@
 from fastapi import APIRouter, status, HTTPException
-from menu.forms import MenuForm, PatchForm
+from menu.forms import BaseForm, PatchForm
 from menu.models import *
-from core.database import MenuSession
+from menu.utils.database import MenuSession
 
 router = APIRouter()
 conn = MenuSession.get_connect()
-
-
-@router.post('/menus', status_code=status.HTTP_201_CREATED)
-def menu_post(menu_form: MenuForm):
-    result =  conn.create(Menu(**menu_form.dict()))
-    if result.id is not None:
-        return conn.get_elem(result.id)
-    return menu_form.dict()
-
-@router.patch('/menus/{item_id}', status_code=status.HTTP_200_OK)
-def patch_post(item_id: str, patch_form: PatchForm):
-    result = conn.update(int(item_id), patch_form.dict(exclude_unset= True))
-    print(result)
-    if result:
-        return result
-    return {}
 
 
 @router.get('/menus/{item_id}')
@@ -35,6 +19,21 @@ def menu_get(item_id: str):
 def menus_get():
     result = conn.get_elems()
     return result
+
+@router.post('/menus', status_code=status.HTTP_201_CREATED)
+def menu_post(menu_form: BaseForm):
+    result =  conn.create(Menu(**menu_form.dict()))
+    if result.id is not None:
+        return conn.get_elem(result.id)
+    return menu_form.dict()
+
+@router.patch('/menus/{item_id}', status_code=status.HTTP_200_OK)
+def menu_patch(item_id: str, patch_form: PatchForm):
+    result = conn.update(int(item_id), patch_form.dict(exclude_unset= True))
+    if result:
+        return result
+    return {}
+
 
 
 @router.delete('/menus/{item_id}', status_code=status.HTTP_200_OK)
